@@ -25,7 +25,7 @@ export default function Products(props) {
         {loading && <Loader />}
         {products.map((product) => {
           return (
-            <Product key={product.id} details={product}></Product>
+            <Product key={product.id} details={product} onProductAdd={props.onProductAdd} onProductDelete={props.onProductDelete}></Product>
           );
         })}
       </div>
