@@ -8,19 +8,29 @@ import Products from "./Products.js";
 import ProductDetails from "./ProductDetails.js";
 import Cart from "./Cart.js";
 import  './index.css';
-;
 
 
 function App() {
-  const [cart, setCart] = useState([]);
-  /* !! DO NOT REMOVE !!*/
-  window.__testsCart = cart; // used for the tests in this project
+  const [cart, setCart] = useState(function () {
+    let savedCart = [];
+    try {
+      savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    } catch (error) {
+      savedCart = [];
+    }
+    return savedCart;
+  });
 
   useEffect(() => {
-    // to visualize the cart in the console every time in changes
-    // you can also use React dev tools
-    console.log(cart);
+    if (cart) {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
   }, [cart]);
+
+  function handleProductDelete(id) {
+    const updatedCart = cart.filter((product) => product.id !== id);
+    setCart(updatedCart);
+  }
 
   function handleProductAdd(newProduct) {
     // check if item exists
@@ -49,11 +59,6 @@ function App() {
         },
       ]);
     }
-  }
-
-  function handleProductDelete(id) {
-    const updatedCart = cart.filter((product) => product.id !== id);
-    setCart(updatedCart);
   }
 
   return (
