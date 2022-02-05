@@ -7,6 +7,9 @@ import About from "./About.js";
 import Products from "./Products.js";
 import ProductDetails from "./ProductDetails.js";
 import Cart from "./Cart.js";
+import  './index.css';
+;
+
 
 function App() {
   const [cart, setCart] = useState([]);
