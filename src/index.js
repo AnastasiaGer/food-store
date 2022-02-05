@@ -1,23 +1,56 @@
-import React, { useState } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Navbar from "./Navbar.js";
 import Home from "./Home.js";
 import About from "./About.js";
 import Products from "./Products.js";
 import ProductDetails from "./ProductDetails.js";
 import Cart from "./Cart.js";
-import './index.css'
 
 function App() {
-  const [cart, setCart] = useState([])
+  const [cart, setCart] = useState([]);
+  /* !! DO NOT REMOVE !!*/
+  window.__testsCart = cart; // used for the tests in this project
+
+  useEffect(() => {
+    // to visualize the cart in the console every time in changes
+    // you can also use React dev tools
+    console.log(cart);
+  }, [cart]);
 
   function handleProductAdd(newProduct) {
-    console.log("Adding product " + newProduct.id)
+    // check if item exists
+    const existingProduct = cart.find(
+      (product) => product.id === newProduct.id
+    );
+    if (existingProduct) {
+      // increase quantity
+      const updatedCart = cart.map((product) => {
+        if (product.id === newProduct.id) {
+          return {
+            ...product,
+            quantity: product.quantity + 1,
+          };
+        }
+        return product;
+      });
+      setCart(updatedCart);
+    } else {
+      // product is new to the cart
+      setCart([
+        ...cart,
+        {
+          ...newProduct,
+          quantity: 1,
+        },
+      ]);
+    }
   }
 
   function handleProductDelete(id) {
-    console.log("Deleting product " + id)
+    const updatedCart = cart.filter((product) => product.id !== id);
+    setCart(updatedCart);
   }
 
   return (
@@ -35,11 +68,11 @@ function App() {
             <Products
               cart={cart}
               onProductAdd={handleProductAdd}
-              onProductDelete={handleProductDelete} />
+              onProductDelete={handleProductDelete}
+            />
           </Route>
           <Route path="/products/:id">
-            <ProductDetails
-              onProductAdd={handleProductAdd} />
+            <ProductDetails onProductAdd={handleProductAdd} />
           </Route>
           <Route exact path="/cart">
             <Cart cart={cart} />
